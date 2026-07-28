@@ -1,7 +1,7 @@
 # Ready To Destroy
 
 - ZIP 파일: Ready_To_Destroy_박정호.zip
-- 배포 URL: 미배포
+- 배포 URL: https://github.com/roleflobot/game.git
 - 장르: 탑다운 슈팅 / 회피 아케이드
 
 ## 🎮 게임명
