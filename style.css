@@ -1,0 +1,1447 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --space-black: #020611;
+  --panel: rgba(7, 18, 34, 0.92);
+  --panel-light: rgba(15, 40, 62, 0.78);
+  --line: #285d77;
+  --cyan: #4ce0ff;
+  --cyan-soft: #a9f4ff;
+  --danger: #ff4f75;
+  --muted: #8fb8cc;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #05070f;
+  color: #e6f7ff;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+body {
+  background-image:
+    radial-gradient(ellipse at 50% 18%, rgba(20, 85, 119, 0.18), transparent 42%),
+    linear-gradient(135deg, rgba(2, 7, 17, 0.85), rgba(8, 16, 33, 0.94)),
+    radial-gradient(1px 1px at 10% 20%, #ffffff 0, transparent 60%),
+    radial-gradient(1px 1px at 80% 10%, #ffffff 0, transparent 60%),
+    radial-gradient(1px 1px at 30% 70%, #9fd8ff 0, transparent 60%),
+    radial-gradient(1px 1px at 60% 40%, #ffffff 0, transparent 60%),
+    radial-gradient(1px 1px at 90% 80%, #9fd8ff 0, transparent 60%),
+    radial-gradient(1px 1px at 45% 90%, #ffffff 0, transparent 60%),
+    radial-gradient(1px 1px at 20% 50%, #ffffff 0, transparent 60%);
+  background-repeat: repeat;
+  background-size: 400px 400px;
+}
+
+#app {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.sound-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  min-width: 108px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 7px 10px;
+  background:
+    linear-gradient(135deg, rgba(25, 74, 99, 0.24), transparent 45%),
+    rgba(5, 10, 20, 0.92);
+  color: var(--muted);
+  font: 0.78rem 'Consolas', 'Courier New', monospace;
+  letter-spacing: 1px;
+  cursor: pointer;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+}
+
+.sound-toggle:hover,
+.sound-toggle:focus-visible {
+  border-color: #4ce0ff;
+  color: #4ce0ff;
+  outline: none;
+}
+
+.sound-toggle[aria-pressed="true"] {
+  color: #75838a;
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  max-width: 480px;
+}
+
+.screen.hidden {
+  display: none;
+}
+
+.title {
+  font-size: clamp(2.2rem, 7vw, 3.45rem);
+  line-height: 0.95;
+  letter-spacing: 7px;
+  color: var(--cyan);
+  background: linear-gradient(180deg, #f3fdff 5%, #70eaff 48%, #168db6 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 10px rgba(76, 224, 255, 0.45));
+  margin: 0;
+}
+
+.panel-kicker {
+  align-self: stretch;
+  margin: 0;
+  color: #70d8ee;
+  font-size: 0.72rem;
+  letter-spacing: 2.5px;
+  text-align: left;
+}
+
+.panel-kicker::before {
+  content: "";
+  display: inline-block;
+  width: 28px;
+  height: 2px;
+  margin: 0 9px 3px 0;
+  background: var(--cyan);
+  box-shadow: 0 0 6px var(--cyan);
+}
+
+.panel-kicker--danger {
+  color: #ff9ab0;
+}
+
+.panel-kicker--danger::before {
+  background: var(--danger);
+  box-shadow: 0 0 6px var(--danger);
+}
+
+.title-subtitle {
+  margin: -8px 0 4px;
+  color: #6a9eb4;
+  font-size: 0.74rem;
+  letter-spacing: 4px;
+}
+
+.rule {
+  position: relative;
+  margin: 4px 0;
+  border-left: 2px solid var(--cyan);
+  padding: 11px 14px;
+  font-size: 1rem;
+  color: #cfefff;
+  line-height: 1.5;
+  text-align: left;
+  background: linear-gradient(90deg, rgba(76, 224, 255, 0.1), transparent);
+}
+
+.rule span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--cyan);
+  font-size: 0.68rem;
+  letter-spacing: 2px;
+}
+
+.controls {
+  display: grid;
+  gap: 7px;
+  width: 100%;
+  border: 1px solid rgba(55, 116, 145, 0.68);
+  border-radius: 3px;
+  padding: 14px;
+  background:
+    linear-gradient(135deg, rgba(27, 82, 107, 0.13), transparent 55%),
+    rgba(8, 22, 39, 0.82);
+  font-size: 0.82rem;
+}
+
+.control-row {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.85fr) 1.25fr;
+  align-items: center;
+  gap: 12px;
+  min-height: 32px;
+  border-bottom: 1px solid rgba(45, 99, 124, 0.3);
+  color: #b9dce8;
+  text-align: left;
+}
+
+.key-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.movement-keys {
+  gap: 7px;
+}
+
+.key-or {
+  color: #5e8799;
+  font-size: 0.58rem;
+  letter-spacing: 0.5px;
+}
+
+.wasd-keypad,
+.arrow-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 22px);
+  grid-template-rows: repeat(2, 20px);
+  gap: 2px;
+}
+
+.compact-key,
+.arrow-key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 20px;
+  padding: 0;
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
+.wasd-key--w {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.wasd-key--a {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.wasd-key--s {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.wasd-key--d {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.arrow-key--up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.arrow-key--left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.arrow-key--down {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.arrow-key--right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  min-height: 24px;
+  border: 1px solid #397b98;
+  border-bottom-color: #17394b;
+  border-radius: 2px;
+  padding: 4px 6px;
+  background: linear-gradient(#143a50, #081c2a);
+  color: #d8faff;
+  font: 0.68rem 'Consolas', 'Courier New', monospace;
+  letter-spacing: 0.5px;
+  text-align: center;
+  box-shadow: inset 0 0 7px rgba(76, 224, 255, 0.08);
+}
+
+.space-key {
+  width: 92px;
+  height: 25px;
+  justify-content: flex-start;
+  padding-left: 9px;
+  letter-spacing: 1px;
+}
+
+.standard-key {
+  width: 30px;
+  min-width: 30px;
+  height: 26px;
+  padding: 0;
+}
+
+.restart-keys {
+  align-items: center;
+  min-height: 30px;
+}
+
+.enter-key {
+  position: relative;
+  width: 82px;
+  height: 30px;
+  min-height: 30px;
+  justify-content: flex-start;
+  padding: 0 8px;
+  border-radius: 2px;
+  letter-spacing: 0.3px;
+}
+
+.enter-key::after {
+  content: "↵";
+  margin-left: auto;
+  color: #d8faff;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.control-tip {
+  margin: 4px 0 0;
+  color: #79a5b7;
+  font-size: 0.72rem;
+  text-align: center;
+}
+
+/*
+ * 3열로 나누면 카드마다 폭이 좁아 글씨를 키울 수 없어서, 한 줄에 하나씩
+ * 전체 폭을 쓰는 행 배치로 둔다. 덕분에 이름·설명을 크고 밝게 쓸 수 있다.
+ */
+.module-guide {
+  display: grid;
+  gap: 6px;
+  margin-top: 3px;
+  border-top: 1px solid rgba(55, 112, 137, 0.42);
+  padding-top: 11px;
+}
+
+.module-guide-card {
+  display: grid;
+  grid-template-columns: 26px minmax(74px, auto) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  border: 1px solid rgba(55, 112, 137, 0.42);
+  border-radius: 2px;
+  padding: 7px 12px;
+  background:
+    linear-gradient(135deg, rgba(76, 224, 255, 0.07), transparent 60%),
+    rgba(4, 15, 28, 0.72);
+  text-align: left;
+}
+
+.module-guide-icon {
+  display: block;
+  width: 26px;
+  height: 26px;
+}
+
+.module-guide-name {
+  color: #d7f8ff;
+  font-size: 0.8rem;
+  letter-spacing: 1.5px;
+}
+
+.module-guide-desc {
+  color: #bbdfec;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.pilot-entry {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+}
+
+.pilot-entry-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #8edff0;
+  font-size: 0.68rem;
+  letter-spacing: 1.8px;
+}
+
+.pilot-entry-label span {
+  color: #557f91;
+  font-size: 0.58rem;
+  letter-spacing: 1px;
+}
+
+.player-name-input {
+  width: 100%;
+  border: 1px solid #397b98;
+  border-radius: 2px;
+  padding: 11px 13px;
+  background:
+    linear-gradient(90deg, rgba(76, 224, 255, 0.08), transparent 55%),
+    rgba(3, 12, 23, 0.94);
+  color: #e8fbff;
+  caret-color: var(--cyan);
+  font: 0.92rem 'Consolas', 'Courier New', monospace;
+  letter-spacing: 0.5px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.player-name-input::placeholder {
+  color: #4f7180;
+}
+
+.player-name-input:focus {
+  border-color: var(--cyan);
+  box-shadow: inset 0 0 12px rgba(76, 224, 255, 0.08), 0 0 9px rgba(76, 224, 255, 0.13);
+}
+
+.player-name-input[aria-invalid="true"] {
+  border-color: var(--danger);
+  box-shadow: 0 0 9px rgba(255, 79, 117, 0.18);
+}
+
+.name-error {
+  min-height: 14px;
+  margin: 0;
+  color: #ff8da6;
+  font-size: 0.66rem;
+  line-height: 1.25;
+}
+
+.btn {
+  min-width: 176px;
+  background:
+    linear-gradient(110deg, rgba(76, 224, 255, 0.22), transparent 42%),
+    #082536;
+  color: var(--cyan-soft);
+  border: 1px solid var(--cyan);
+  padding: 12px 30px;
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: 700;
+  letter-spacing: 3px;
+  border-radius: 2px;
+  cursor: pointer;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  box-shadow: inset 0 0 15px rgba(76, 224, 255, 0.08);
+  transition: color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  color: #ffffff;
+  background:
+    linear-gradient(110deg, rgba(76, 224, 255, 0.42), transparent 55%),
+    #0b3b51;
+  box-shadow: inset 0 0 22px rgba(76, 224, 255, 0.2), 0 0 14px rgba(76, 224, 255, 0.22);
+  outline: none;
+}
+
+#start-screen,
+#game-over-screen {
+  position: relative;
+  width: min(560px, 94vw);
+  max-width: 560px;
+  border: 1px solid rgba(65, 142, 172, 0.74);
+  padding: 34px 38px 36px;
+  background:
+    linear-gradient(90deg, var(--cyan) 0 54px, transparent 54px) top left / 100% 3px no-repeat,
+    linear-gradient(180deg, var(--cyan) 0 42px, transparent 42px) top left / 3px 100% no-repeat,
+    linear-gradient(270deg, #2b6b86 0 36px, transparent 36px) bottom right / 100% 2px no-repeat,
+    linear-gradient(0deg, #2b6b86 0 36px, transparent 36px) bottom right / 2px 100% no-repeat,
+    radial-gradient(ellipse at 50% 0%, rgba(37, 127, 160, 0.18), transparent 55%),
+    rgba(4, 13, 27, 0.94);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.48), inset 0 0 40px rgba(32, 96, 127, 0.08);
+  backdrop-filter: blur(4px);
+}
+
+#game-over-screen {
+  border-color: rgba(171, 57, 91, 0.7);
+  background:
+    linear-gradient(90deg, var(--danger) 0 54px, transparent 54px) top left / 100% 3px no-repeat,
+    linear-gradient(180deg, var(--danger) 0 42px, transparent 42px) top left / 3px 100% no-repeat,
+    radial-gradient(ellipse at 50% 0%, rgba(155, 36, 71, 0.2), transparent 58%),
+    rgba(12, 7, 19, 0.95);
+}
+
+#game-over-screen .title {
+  background: linear-gradient(180deg, #fff4f7 5%, #ff7897 50%, #a51e4c 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+#game-screen {
+  width: 100%;
+  max-width: 480px;
+}
+
+.hud {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  max-width: 480px;
+  color: var(--cyan);
+  margin-bottom: 8px;
+}
+
+.hud-panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 48px;
+  border: 1px solid rgba(46, 112, 141, 0.72);
+  padding: 7px 11px;
+  background:
+    linear-gradient(135deg, rgba(76, 224, 255, 0.12), transparent 55%),
+    rgba(5, 18, 32, 0.9);
+  clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px);
+}
+
+.hud-panel--score {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.hud-panel--lives {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.hud-label {
+  color: #6f9fb3;
+  font-size: 0.6rem;
+  letter-spacing: 1.8px;
+}
+
+.hud-value {
+  color: #d7fbff;
+  font-size: 1.18rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px rgba(76, 224, 255, 0.5);
+}
+
+.hud-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 112px;
+  color: #7198aa;
+  font-size: 0.58rem;
+  letter-spacing: 1.3px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #54e9a3;
+  box-shadow: 0 0 7px #54e9a3;
+  animation: status-pulse 1.4s ease-in-out infinite;
+}
+
+.life-pips {
+  display: flex;
+  gap: 5px;
+  min-height: 18px;
+}
+
+.life-pip {
+  color: #203c49;
+  font-size: 0.9rem;
+  text-shadow: none;
+}
+
+.life-pip.is-active {
+  color: var(--cyan);
+  text-shadow: 0 0 7px var(--cyan);
+}
+
+@keyframes status-pulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+.powerup-hud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 480px;
+  min-height: 32px;
+  border-left: 2px solid #2d718d;
+  padding: 3px 8px;
+  background: linear-gradient(90deg, rgba(15, 47, 67, 0.62), transparent);
+  margin-bottom: 8px;
+}
+
+.powerup-hud-label {
+  margin-right: 2px;
+  color: #567f91;
+  font-size: 0.58rem;
+  letter-spacing: 1.4px;
+}
+
+.powerup-slot {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 24px;
+  border: 1px solid rgba(55, 112, 137, 0.42);
+  border-radius: 2px;
+  padding: 3px 6px;
+  background: rgba(5, 18, 31, 0.75);
+}
+
+.powerup-slot.hidden {
+  display: none;
+}
+
+.powerup-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.powerup-name,
+.powerup-time {
+  color: #9bc4d4;
+  font-size: 0.58rem;
+  letter-spacing: 0.5px;
+}
+
+.powerup-time {
+  min-width: 18px;
+  color: #d7f8ff;
+  font-variant-numeric: tabular-nums;
+}
+
+.powerup-count {
+  font-size: 0.72rem;
+  color: #3ddc84;
+}
+
+.powerup-bar {
+  width: 38px;
+  height: 4px;
+  border: 1px solid #2a5b73;
+  border-radius: 3px;
+  overflow: hidden;
+  background: rgba(15, 30, 45, 0.6);
+}
+
+.powerup-bar-fill {
+  height: 100%;
+  width: 100%;
+  background: #4ce0ff;
+  transform-origin: left;
+}
+
+.debrief-label {
+  margin: 4px 0 -10px;
+  color: #a56b7c;
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+}
+
+#final-score {
+  margin: 0;
+  color: #ffffff;
+  font-size: 2.35rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 5px;
+  text-shadow: 0 0 14px rgba(255, 79, 117, 0.55);
+}
+
+.debrief-pilot {
+  margin: -8px 0 0;
+  color: #8e6977;
+  font-size: 0.66rem;
+  letter-spacing: 1.8px;
+}
+
+.debrief-pilot strong {
+  margin-left: 7px;
+  color: #ffd9e2;
+  font-size: 0.82rem;
+  letter-spacing: 0.5px;
+}
+
+.leaderboard-panel {
+  width: 100%;
+  border: 1px solid rgba(171, 57, 91, 0.52);
+  border-radius: 2px;
+  padding: 11px 13px 12px;
+  background:
+    linear-gradient(135deg, rgba(255, 79, 117, 0.08), transparent 58%),
+    rgba(7, 10, 21, 0.82);
+}
+
+.leaderboard-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(171, 57, 91, 0.36);
+  padding-bottom: 7px;
+}
+
+.leaderboard-heading h3 {
+  margin: 0;
+  color: #ff9cb2;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.leaderboard-heading span {
+  color: #76515e;
+  font-size: 0.58rem;
+  letter-spacing: 1px;
+}
+
+.current-rank {
+  margin: 8px 0;
+  color: #ffc1cf;
+  font-size: 0.7rem;
+  letter-spacing: 0.8px;
+}
+
+.leaderboard-list {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 72px;
+  align-items: center;
+  min-height: 23px;
+  border-left: 2px solid transparent;
+  padding: 3px 7px;
+  color: #8faab6;
+  background: rgba(15, 23, 37, 0.54);
+  font-size: 0.68rem;
+}
+
+.leaderboard-row.is-current {
+  border-left-color: var(--danger);
+  color: #ffe4ea;
+  background: rgba(135, 31, 61, 0.24);
+}
+
+.leaderboard-rank {
+  color: #a96074;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+
+.leaderboard-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.leaderboard-score {
+  color: #ffd2dc;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 1px;
+  text-align: right;
+}
+
+.debrief-message {
+  margin: 0 0 4px;
+  color: #a9bdc7;
+  font-size: 0.82rem;
+}
+
+#play-area {
+  position: relative;
+  isolation: isolate;
+  width: 480px;
+  max-width: 100%;
+  height: 640px;
+  border: 1px solid #2a5b73;
+  border-radius: 8px;
+  background-color: #040916;
+  /* 격자선은 움직이지 않으므로 스크롤되는 별 레이어에서 분리해 여기에 고정한다. */
+  background-image:
+    linear-gradient(rgba(66, 170, 207, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(66, 170, 207, 0.023) 1px, transparent 1px),
+    radial-gradient(ellipse at 18% 28%, rgba(29, 90, 132, 0.22), transparent 42%),
+    radial-gradient(ellipse at 82% 72%, rgba(92, 35, 125, 0.16), transparent 45%),
+    linear-gradient(180deg, rgba(4, 13, 29, 0.96), rgba(2, 6, 17, 0.98));
+  background-size: 48px 48px, 48px 48px, auto, auto, auto;
+  box-shadow:
+    inset 0 0 48px rgba(0, 0, 0, 0.75),
+    inset 0 0 2px rgba(76, 224, 255, 0.45),
+    0 0 24px rgba(24, 112, 151, 0.14);
+  overflow: hidden;
+  /*
+   * 피격 순간에만 transform 레이어로 승격하면 큰 텍스처 할당과 화면 흔들림 효과가
+   * 동시에 시작된다. 게임 영역의 합성 레이어를 미리 예약해 그 순간의 할당을 없앤다.
+   */
+  will-change: transform;
+}
+
+/*
+ * 별 배경은 예전에 background-position을 애니메이션했는데, 그러면 매 프레임 플레이
+ * 영역(480x640) 전체를 다시 칠하게 되어 총알이 많을 때 프레임이 무너졌다.
+ * 레이어를 두 배 높이로 만들고 transform으로 밀어 GPU 합성만으로 처리한다.
+ * 이동 거리는 640px 고정이다. border-box라 콘텐츠 높이는 638px이므로 %를 쓰면
+ * 이동 거리가 타일 높이의 배수가 아니게 되어 루프마다 이음매가 튄다.
+ * 타일 높이(160/320/128/160)는 모두 640의 약수라 이 값에서만 이음매가 없다.
+ */
+#play-area::before,
+#play-area::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1280px;
+  pointer-events: none;
+  will-change: transform;
+}
+
+#play-area::before {
+  z-index: 0;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.78) 0 1px, transparent 1.3px),
+    radial-gradient(circle, rgba(128, 206, 255, 0.64) 0 1px, transparent 1.4px);
+  background-position: 19px 27px, 77px 113px;
+  background-size: 120px 160px, 190px 320px;
+  opacity: 0.55;
+  animation: star-scroll 18s linear infinite;
+}
+
+#play-area::after {
+  z-index: 1;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.95) 0 1.35px, transparent 1.8px),
+    radial-gradient(circle, rgba(93, 218, 255, 0.82) 0 1px, transparent 1.5px);
+  background-position: 31px 12px, 102px 64px;
+  background-size: 80px 128px, 140px 160px;
+  opacity: 0.5;
+  animation: star-scroll 7s linear infinite;
+}
+
+@keyframes star-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, -640px, 0); }
+}
+
+@keyframes screen-shake {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-6px, 4px); }
+  40% { transform: translate(6px, -4px); }
+  60% { transform: translate(-4px, 2px); }
+  80% { transform: translate(4px, -2px); }
+  100% { transform: translate(0, 0); }
+}
+
+#play-area.shake {
+  animation: screen-shake 200ms ease-out;
+}
+
+.player {
+  position: absolute;
+  z-index: 3;
+  width: 40px;
+  height: 26px;
+  transform-origin: 50% 55%;
+  filter: drop-shadow(0 0 5px rgba(76, 224, 255, 0.85));
+  will-change: transform;
+}
+
+.ship-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.player-hull {
+  fill: #12394e;
+  stroke: #7ff2ff;
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+.player-wing {
+  fill: #176b86;
+  stroke: #4ce0ff;
+  stroke-width: 1.5;
+}
+
+.player-spine {
+  fill: #d9faff;
+  stroke: #4ce0ff;
+  stroke-width: 1.5;
+}
+
+.player-cockpit {
+  fill: #061822;
+  stroke: #b9f7ff;
+  stroke-width: 2;
+}
+
+.player-panel-line {
+  fill: none;
+  stroke: rgba(185, 247, 255, 0.72);
+  stroke-width: 1.4;
+}
+
+.player-engine-port {
+  fill: #fff6b0;
+  stroke: #4ce0ff;
+  stroke-width: 1.5;
+}
+
+.player-engine-glow {
+  fill: rgba(76, 224, 255, 0.45);
+  transform-box: fill-box;
+  transform-origin: center top;
+  animation: engine-thrust 0.16s ease-in-out infinite alternate;
+}
+
+@keyframes player-hit-flash {
+  0% { filter: brightness(3) drop-shadow(0 0 14px #ff3b6e); }
+  100% { filter: drop-shadow(0 0 6px #4ce0ff); }
+}
+
+.player.hit-flash {
+  animation: player-hit-flash 150ms ease-out;
+}
+
+@keyframes shield-pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.06); }
+}
+
+.shield-aura {
+  position: absolute;
+  z-index: 3;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px solid #3ddc84;
+  box-shadow: 0 0 10px #3ddc84, inset 0 0 8px rgba(61, 220, 132, 0.5);
+  pointer-events: none;
+  animation: shield-pulse 1.2s ease-in-out infinite;
+}
+
+.shield-aura.hidden {
+  display: none;
+}
+
+.bullet-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.enemy {
+  position: absolute;
+  z-index: 3;
+  transform-origin: center;
+}
+
+.enemy--drone {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 0 5px rgba(255, 59, 110, 0.85));
+}
+
+.enemy--scout {
+  width: 30px;
+  height: 30px;
+  filter: drop-shadow(0 0 5px rgba(255, 159, 67, 0.85));
+  animation: scout-bank 1.1s ease-in-out infinite;
+}
+
+.enemy--scout .ship-svg {
+  transform-origin: center;
+  transition: transform 80ms ease-out;
+}
+
+.enemy--scout.is-reversing .ship-svg {
+  transform: rotate(180deg);
+}
+
+.enemy--cruiser {
+  width: 44px;
+  height: 44px;
+  filter: drop-shadow(0 0 6px rgba(183, 108, 255, 0.85));
+}
+
+.drone-frame {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: drone-frame-spin 2.4s linear infinite;
+}
+
+.drone-hull {
+  fill: #4a1025;
+  stroke: #ff7799;
+  stroke-width: 4;
+}
+
+.drone-cutout {
+  fill: #160812;
+  stroke: #9c2948;
+  stroke-width: 2;
+}
+
+.drone-arm {
+  fill: #a91f48;
+}
+
+.drone-core-ring,
+.scout-sensor-ring,
+.cruiser-core-ring {
+  fill: none;
+  stroke-width: 3;
+  opacity: 0.8;
+}
+
+.drone-core-ring {
+  stroke: #ff8aa7;
+}
+
+.drone-core {
+  fill: #fff0f4;
+  filter: drop-shadow(0 0 6px #ff3b6e);
+  animation: enemy-core-pulse 0.8s ease-in-out infinite;
+}
+
+.drone-sight {
+  fill: none;
+  stroke: #ffd4de;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.scout-hull {
+  fill: #5c2d0d;
+  stroke: #ffc078;
+  stroke-width: 4;
+  stroke-linejoin: round;
+}
+
+.scout-wing {
+  fill: #b85412;
+  stroke: #ff9f43;
+  stroke-width: 2;
+}
+
+.scout-spine {
+  fill: #2b1509;
+  stroke: #ffce8e;
+  stroke-width: 2;
+}
+
+.scout-panel-line {
+  fill: none;
+  stroke: rgba(255, 222, 176, 0.75);
+  stroke-width: 2;
+}
+
+.scout-sensor-ring {
+  stroke: #ffcf87;
+}
+
+.scout-sensor {
+  fill: #fff2d9;
+  filter: drop-shadow(0 0 5px #ff9f43);
+  animation: enemy-core-pulse 0.65s ease-in-out infinite;
+}
+
+.cruiser-hull {
+  fill: #28123b;
+  stroke: #d4a2ff;
+  stroke-width: 4;
+  stroke-linejoin: round;
+}
+
+.cruiser-plate {
+  fill: #6d3296;
+  stroke: #bd72f3;
+  stroke-width: 2;
+}
+
+.cruiser-keel {
+  fill: #160b22;
+  stroke: #e1c0ff;
+  stroke-width: 2;
+}
+
+.cruiser-core-ring {
+  stroke: #d9a9ff;
+}
+
+.cruiser-core {
+  fill: #f6e9ff;
+  filter: drop-shadow(0 0 7px #b76cff);
+  animation: enemy-core-pulse 1s ease-in-out infinite;
+}
+
+.cruiser-panel-line {
+  fill: none;
+  stroke: rgba(231, 204, 255, 0.75);
+  stroke-width: 2;
+}
+
+.cruiser-port {
+  fill: #ffb4ff;
+  filter: drop-shadow(0 0 4px #b76cff);
+}
+
+.enemy--cruiser.damaged .cruiser-plate--left {
+  fill: #321744;
+  stroke: #ff6fae;
+}
+
+.enemy--cruiser.damaged .cruiser-core {
+  animation: cruiser-damage-flicker 0.25s steps(2, end) infinite;
+}
+
+@keyframes drone-frame-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes scout-bank {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+
+@keyframes enemy-core-pulse {
+  0%, 100% { opacity: 0.72; transform: scale(0.88); transform-origin: center; }
+  50% { opacity: 1; transform: scale(1.12); transform-origin: center; }
+}
+
+@keyframes cruiser-damage-flicker {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+
+@keyframes engine-thrust {
+  from {
+    opacity: 0.45;
+    transform: scaleY(0.72);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1.18);
+  }
+}
+
+@keyframes ambush-warning-flash {
+  0%, 42%, 100% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.82);
+  }
+  16%, 66% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ambush-warning {
+  position: absolute;
+  bottom: 0;
+  z-index: 4;
+  width: 48px;
+  height: 34px;
+  border-bottom: 3px solid currentColor;
+  background: linear-gradient(to top, currentColor 0%, transparent 72%);
+  color: #ff4d5f;
+  filter: drop-shadow(0 0 7px currentColor);
+  opacity: 0;
+  pointer-events: none;
+  animation: ambush-warning-flash 200ms linear forwards;
+}
+
+.ambush-warning::before {
+  content: "▲\A▲";
+  position: absolute;
+  inset: 1px 0 auto;
+  color: currentColor;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 0.72;
+  text-align: center;
+  white-space: pre;
+}
+
+.ambush-warning--scout {
+  color: #ff653d;
+}
+
+.ambush-warning--cruiser {
+  color: #ef4dcb;
+}
+
+.explosion {
+  position: absolute;
+  z-index: 5;
+  color: #ff3b6e;
+  pointer-events: none;
+  animation: explosion-lifecycle 340ms ease-out forwards;
+}
+
+.explosion::before,
+.explosion::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.explosion::before {
+  background: radial-gradient(circle, #ffffff 0%, currentColor 32%, transparent 72%);
+  animation: explosion-core 300ms ease-out forwards;
+}
+
+.explosion::after {
+  inset: 18%;
+  border: 2px solid currentColor;
+  box-shadow: 0 0 8px currentColor;
+  animation: explosion-ring 320ms ease-out forwards;
+}
+
+/* 방사형 파편을 요소 하나에 conic-gradient 스포크로 그린다. */
+.explosion-rays {
+  position: absolute;
+  inset: -8%;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    currentColor 0deg 5deg, transparent 5deg 72deg,
+    currentColor 72deg 77deg, transparent 77deg 144deg,
+    currentColor 144deg 149deg, transparent 149deg 216deg,
+    currentColor 216deg 221deg, transparent 221deg 288deg,
+    currentColor 288deg 293deg, transparent 293deg 360deg
+  );
+  animation: explosion-rays-fly 330ms ease-out forwards;
+}
+
+.explosion--drone {
+  color: #ff3b6e;
+}
+
+.explosion--scout {
+  color: #ff9f43;
+}
+
+.explosion--cruiser {
+  color: #b76cff;
+}
+
+@keyframes explosion-lifecycle {
+  0%, 70% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes explosion-core {
+  0% { opacity: 1; transform: scale(0.18); }
+  55% { opacity: 0.9; transform: scale(1.12); }
+  100% { opacity: 0; transform: scale(1.65); }
+}
+
+@keyframes explosion-ring {
+  0% { opacity: 1; transform: scale(0.2); }
+  100% { opacity: 0; transform: scale(2.15); }
+}
+
+@keyframes explosion-rays-fly {
+  0% { opacity: 0.95; transform: scale(0.28) rotate(0deg); }
+  100% { opacity: 0; transform: scale(1.75) rotate(16deg); }
+}
+
+/*
+ * 피탄 이펙트는 가장 자주 생기므로 광선 6개를 자식으로 두지 않고 단일 섬광으로 그린다.
+ * (요소 7개 -> 1개. 난전에서 합성 레이어가 폭증하던 주범이었다.)
+ */
+.impact-spark {
+  position: absolute;
+  z-index: 5;
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, currentColor 36%, transparent 70%);
+  color: #ff3b6e;
+  pointer-events: none;
+  animation: impact-burst 180ms ease-out forwards;
+}
+
+.impact-spark--scout {
+  color: #ff9f43;
+}
+
+.impact-spark--cruiser {
+  color: #d09aff;
+}
+
+@keyframes impact-burst {
+  0% { opacity: 1; transform: scale(0.35); }
+  100% { opacity: 0; transform: scale(1.45); }
+}
+
+/*
+ * GPU 워밍업용 레이어. 눈에는 안 보여야 하지만 실제로 래스터는 되어야 하므로
+ * display:none이나 opacity:0 대신 아주 옅게(0.01) 그린다. 화면 밖으로 빼면
+ * 브라우저가 그리기를 건너뛰므로 좌상단 구석에 작게 겹쳐 둔다.
+ */
+.gpu-prewarm {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100px;
+  height: 100px;
+  opacity: 0.01;
+  z-index: 2147483647;
+  overflow: hidden;
+  contain: strict;
+  pointer-events: none;
+}
+
+.gpu-prewarm-screen-shake {
+  position: absolute;
+  inset: 0;
+  background: #040916;
+  animation: screen-shake 200ms ease-out;
+}
+
+/* 아이콘 스프라이트 본체는 화면을 차지하지 않는다. */
+.icon-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.item {
+  position: absolute;
+  z-index: 3;
+  width: 22px;
+  height: 22px;
+  perspective: 90px;
+}
+
+.item-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* 모양과 금속 질감은 SVG 심볼이 담당하고, 여기서는 발광만 입힌다. */
+.item--spread {
+  filter: drop-shadow(0 0 5px rgba(76, 139, 255, 0.9));
+}
+
+.item--shield {
+  filter: drop-shadow(0 0 5px rgba(61, 220, 132, 0.9));
+}
+
+.item--rapid {
+  filter: drop-shadow(0 0 5px rgba(255, 210, 61, 0.9));
+}
+
+/*
+ * 떨어지는 캡슐만 천천히 좌우로 돌려 입체감을 준다(HUD·안내 아이콘은 정지).
+ * 360도로 돌리면 90도 지점에서 완전히 옆면이 되어 아이템이 잠깐 사라지므로,
+ * 항상 알아볼 수 있도록 ±34도만 왕복시킨다.
+ */
+@keyframes item-spin {
+  0%, 100% { transform: rotateY(-34deg); }
+  50% { transform: rotateY(34deg); }
+}
+
+.item .item-svg {
+  animation: item-spin 2.2s ease-in-out infinite;
+}
+
+@media (max-width: 520px) {
+  #app {
+    padding: 64px 8px 16px;
+  }
+
+  #start-screen,
+  #game-over-screen {
+    padding: 28px 20px 30px;
+  }
+
+  .control-row {
+    grid-template-columns: 1fr;
+    gap: 5px;
+    padding-bottom: 6px;
+  }
+
+  .hud-status {
+    display: none;
+  }
+
+  .hud-panel {
+    padding-inline: 8px;
+  }
+
+  .powerup-hud {
+    gap: 5px;
+  }
+
+  /* 좁은 화면에서는 이름과 설명을 아이콘 오른쪽에 두 줄로 쌓는다. */
+  .module-guide-card {
+    grid-template-columns: 26px minmax(0, 1fr);
+    column-gap: 10px;
+    row-gap: 2px;
+  }
+
+  .module-guide-icon {
+    grid-row: 1 / span 2;
+    align-self: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #play-area::before,
+  #play-area::after,
+  .drone-frame,
+  .enemy--scout,
+  .player-engine-glow,
+  .status-dot,
+  .item .item-svg {
+    animation: none;
+  }
+}

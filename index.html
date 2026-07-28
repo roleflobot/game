@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ready To Destroy</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <!--
+    아이템 아이콘 스프라이트. 그라디언트를 한 번만 정의하고 <use>로 재사용해서
+    (게임 내 캡슐 / 시작화면 안내 / HUD) 여러 곳에 써도 id가 중복되지 않게 한다.
+    <use> 내부에는 CSS 클래스가 안정적으로 먹지 않으므로 색은 전부 속성으로 지정한다.
+  -->
+  <svg class="icon-sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="metal-spread" x1="0" y1="0" x2="0.85" y2="1">
+        <stop offset="0" stop-color="#f2f7ff"/>
+        <stop offset="0.26" stop-color="#9cc2ff"/>
+        <stop offset="0.54" stop-color="#4b7fe8"/>
+        <stop offset="0.79" stop-color="#21489f"/>
+        <stop offset="1" stop-color="#12295c"/>
+      </linearGradient>
+      <linearGradient id="metal-shield" x1="0" y1="0" x2="0.85" y2="1">
+        <stop offset="0" stop-color="#f0fff8"/>
+        <stop offset="0.26" stop-color="#93f5c4"/>
+        <stop offset="0.54" stop-color="#35c97e"/>
+        <stop offset="0.79" stop-color="#178a52"/>
+        <stop offset="1" stop-color="#0a4a30"/>
+      </linearGradient>
+      <linearGradient id="metal-rapid" x1="0" y1="0" x2="0.85" y2="1">
+        <stop offset="0" stop-color="#fffdf0"/>
+        <stop offset="0.26" stop-color="#ffe98f"/>
+        <stop offset="0.54" stop-color="#f5c31f"/>
+        <stop offset="0.79" stop-color="#b8820a"/>
+        <stop offset="1" stop-color="#6b4a05"/>
+      </linearGradient>
+      <!-- 좌상단은 밝고 우하단은 어두운 광택. 도형을 축소 복제해 덧씌우면 볼록해 보인다. -->
+      <linearGradient id="metal-gloss" x1="0" y1="0" x2="0.35" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.72"/>
+        <stop offset="0.4" stop-color="#ffffff" stop-opacity="0.16"/>
+        <stop offset="0.72" stop-color="#ffffff" stop-opacity="0"/>
+        <stop offset="1" stop-color="#000000" stop-opacity="0.26"/>
+      </linearGradient>
+      <!-- 삼지창처럼 굴곡진 한 덩어리는 도형 전체에 같은 광원을 걸어야 해서
+           뷰박스 좌표계(userSpaceOnUse)로 고정한 광택을 따로 쓴다. -->
+      <linearGradient id="metal-gloss-user" gradientUnits="userSpaceOnUse" x1="8" y1="0" x2="78" y2="96">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.6"/>
+        <stop offset="0.34" stop-color="#ffffff" stop-opacity="0.14"/>
+        <stop offset="0.62" stop-color="#ffffff" stop-opacity="0"/>
+        <stop offset="1" stop-color="#000000" stop-opacity="0.34"/>
+      </linearGradient>
+      <!-- 아래 item-icon-spread의 윤곽과 반드시 같은 좌표를 유지할 것. -->
+      <clipPath id="clip-trident">
+        <path d="M50 2 L56 40 C58 52 78 50 86 8 C94 30 92 52 74 60 L58 62 L58 92 Q58 97 53 97 L47 97 Q42 97 42 92 L42 62 L26 60 C8 52 6 30 14 8 C22 50 42 52 44 40 Z"/>
+      </clipPath>
+    </defs>
+
+    <!-- 포세이돈 삼지창(TRIDENT). 창날과 자루를 따로 얹지 않고 하나의 연속된 윤곽으로
+         이어 단조된 한 덩어리처럼 보이게 한다. 세 갈래가 3방향 확산탄과 대응된다.
+         윤곽 좌표는 위 clip-trident와 반드시 동일하게 유지할 것. -->
+    <symbol id="item-icon-spread" viewBox="0 0 100 100">
+      <path d="M50 2 L56 40 C58 52 78 50 86 8 C94 30 92 52 74 60 L58 62 L58 92 Q58 97 53 97 L47 97 Q42 97 42 92 L42 62 L26 60 C8 52 6 30 14 8 C22 50 42 52 44 40 Z"
+            fill="url(#metal-spread)" stroke="#dbe9ff" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="0" y="0" width="100" height="100"
+            fill="url(#metal-gloss-user)" clip-path="url(#clip-trident)"/>
+      <!-- 가운데 능선과 자루 이음매로 단조된 금속 느낌을 더한다. -->
+      <path d="M50 20 L50 90" stroke="#ffffff" stroke-width="2.4" opacity="0.36" stroke-linecap="round"/>
+      <path d="M43 67 H57" stroke="#04122e" stroke-width="2.6" opacity="0.42" stroke-linecap="round"/>
+      <path d="M44 72 H56" stroke="#ffffff" stroke-width="1.6" opacity="0.28" stroke-linecap="round"/>
+    </symbol>
+
+    <symbol id="item-icon-shield" viewBox="0 0 100 100">
+      <path d="M50 3 L95 21 L95 55 L50 97 L5 55 L5 21 Z"
+            fill="url(#metal-shield)" stroke="#d8fff0" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M50 3 L5 21 L5 55 L50 97 Z" fill="#ffffff" opacity="0.2"/>
+      <path d="M50 3 L95 21 L95 55 L50 97 Z" fill="#032417" opacity="0.26"/>
+      <path d="M50 3 L95 21 L95 55 L50 97 L5 55 L5 21 Z"
+            fill="url(#metal-gloss)"
+            transform="translate(50 50) scale(0.78) translate(-50 -50)"/>
+      <path d="M50 15 L84 29 L84 52 L50 84 L16 52 L16 29 Z"
+            fill="none" stroke="#eafff6" stroke-width="2.4" opacity="0.6" stroke-linejoin="round"/>
+      <path d="M50 9 L50 90" stroke="#ffffff" stroke-width="2" opacity="0.34"/>
+      <path d="M23 25 L49 14 L49 26 L31 34 Z" fill="#ffffff" opacity="0.42"/>
+    </symbol>
+
+    <symbol id="item-icon-rapid" viewBox="0 0 100 100">
+      <path d="M63 3 L19 57 L44 57 L35 97 L82 40 L56 40 Z"
+            fill="url(#metal-rapid)" stroke="#fff6c9" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M63 3 L19 57 L44 57 L35 97 L82 40 L56 40 Z"
+            fill="url(#metal-gloss)"
+            transform="translate(50 50) scale(0.68) translate(-50 -50)"/>
+      <path d="M82 40 L35 97 L42 68 L58 58 Z" fill="#2a1b00" opacity="0.28"/>
+      <path d="M60 12 L30 49" stroke="#ffffff" stroke-width="3.4" opacity="0.5" stroke-linecap="round"/>
+    </symbol>
+  </svg>
+
+  <div id="app">
+    <button
+      id="sound-toggle"
+      class="sound-toggle"
+      type="button"
+      aria-pressed="false"
+      aria-label="효과음 끄기"
+    >SOUND: ON</button>
+
+    <!-- 시작 화면 -->
+    <section id="start-screen" class="screen">
+      <p class="panel-kicker">DEEP SPACE DEFENSE // SECTOR 01</p>
+      <h1 class="title">READY TO DESTROY</h1>
+      <p class="title-subtitle">NEON INTERCEPT PROTOCOL</p>
+      <p class="rule"><span>MISSION</span> 돌격해 오는 적을 레이저건으로 파괴하라.</p>
+      <div class="controls">
+        <div class="control-row">
+          <span class="key-group movement-keys">
+            <span class="wasd-keypad" role="img" aria-label="WASD 키">
+              <kbd class="compact-key wasd-key--w" aria-hidden="true">W</kbd>
+              <kbd class="compact-key wasd-key--a" aria-hidden="true">A</kbd>
+              <kbd class="compact-key wasd-key--s" aria-hidden="true">S</kbd>
+              <kbd class="compact-key wasd-key--d" aria-hidden="true">D</kbd>
+            </span>
+            <span class="key-or">OR</span>
+            <span class="arrow-keypad" role="img" aria-label="키보드 방향키">
+              <kbd class="arrow-key arrow-key--up" aria-hidden="true">↑</kbd>
+              <kbd class="arrow-key arrow-key--left" aria-hidden="true">←</kbd>
+              <kbd class="arrow-key arrow-key--down" aria-hidden="true">↓</kbd>
+              <kbd class="arrow-key arrow-key--right" aria-hidden="true">→</kbd>
+            </span>
+          </span>
+          <span>상하좌우 및 대각선 이동</span>
+        </div>
+        <div class="control-row">
+          <span class="key-group"><kbd class="space-key">SPACE</kbd></span>
+          <span>레이저건 발사</span>
+        </div>
+        <div class="control-row">
+          <span class="key-group restart-keys">
+            <kbd class="enter-key">ENTER</kbd>
+            <span class="key-or">OR</span>
+            <kbd class="standard-key">R</kbd>
+          </span>
+          <span>시작 및 재시작</span>
+        </div>
+        <div class="control-row">
+          <span class="key-group"><kbd class="standard-key">M</kbd></span>
+          <span>효과음 켜기 / 끄기</span>
+        </div>
+        <p class="control-tip">적이 떨어뜨린 아이템을 획득하면 전투강화 모듈이 장착됩니다.</p>
+        <div class="module-guide" aria-label="전투강화 모듈 안내">
+          <div class="module-guide-card">
+            <span class="module-guide-icon item--spread" aria-hidden="true">
+              <svg class="item-svg" viewBox="0 0 100 100"><use href="#item-icon-spread"/></svg>
+            </span>
+            <strong class="module-guide-name">TRIDENT</strong>
+            <span class="module-guide-desc">8초간 3방향 사격, 중첩하면 6방향</span>
+          </div>
+          <div class="module-guide-card">
+            <span class="module-guide-icon item--shield" aria-hidden="true">
+              <svg class="item-svg" viewBox="0 0 100 100"><use href="#item-icon-shield"/></svg>
+            </span>
+            <strong class="module-guide-name">SHIELD</strong>
+            <span class="module-guide-desc">피격 1회 완전 방어, 최대 3회 충전</span>
+          </div>
+          <div class="module-guide-card">
+            <span class="module-guide-icon item--rapid" aria-hidden="true">
+              <svg class="item-svg" viewBox="0 0 100 100"><use href="#item-icon-rapid"/></svg>
+            </span>
+            <strong class="module-guide-name">BOLT</strong>
+            <span class="module-guide-desc">발사 간격 절반, 홀드하면 자동 연사</span>
+          </div>
+        </div>
+      </div>
+      <div class="pilot-entry">
+        <label for="start-player-name" class="pilot-entry-label">
+          PILOT NAME
+          <span>MAX 12</span>
+        </label>
+        <input
+          id="start-player-name"
+          class="player-name-input"
+          type="text"
+          maxlength="12"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="이름을 입력하세요"
+          aria-describedby="start-name-error"
+          autofocus
+        >
+        <p id="start-name-error" class="name-error" role="alert"></p>
+      </div>
+      <button id="start-button" class="btn">전투 시작</button>
+    </section>
+
+    <!-- 플레이 화면 -->
+    <section id="game-screen" class="screen hidden">
+      <div class="hud">
+        <div class="hud-panel hud-panel--score">
+          <span class="hud-label">SCORE</span>
+          <span id="score-display" class="hud-value">000000</span>
+        </div>
+        <div class="hud-status"><span class="status-dot"></span>COMBAT LINK</div>
+        <div class="hud-panel hud-panel--lives">
+          <span class="hud-label">INTEGRITY</span>
+          <span id="lives-display" class="life-pips" aria-label="남은 목숨 3"></span>
+        </div>
+      </div>
+      <div id="powerup-hud" class="powerup-hud">
+        <span class="powerup-hud-label">MODULES</span>
+        <div id="powerup-spread" class="powerup-slot hidden">
+          <div class="powerup-icon item--spread">
+            <svg class="item-svg" viewBox="0 0 100 100"><use href="#item-icon-spread"/></svg>
+          </div>
+          <span class="powerup-name">TRIDENT ×3</span>
+          <div class="powerup-bar"><div class="powerup-bar-fill"></div></div>
+          <span class="powerup-time">8s</span>
+        </div>
+        <div id="powerup-rapid" class="powerup-slot hidden">
+          <div class="powerup-icon item--rapid">
+            <svg class="item-svg" viewBox="0 0 100 100"><use href="#item-icon-rapid"/></svg>
+          </div>
+          <span class="powerup-name">BOLT</span>
+          <div class="powerup-bar"><div class="powerup-bar-fill"></div></div>
+          <span class="powerup-time">8s</span>
+        </div>
+        <div id="powerup-shield" class="powerup-slot hidden">
+          <div class="powerup-icon item--shield">
+            <svg class="item-svg" viewBox="0 0 100 100"><use href="#item-icon-shield"/></svg>
+          </div>
+          <span class="powerup-name">SHIELD</span>
+          <span class="powerup-count"></span>
+        </div>
+      </div>
+      <div id="play-area"></div>
+    </section>
+
+    <!-- 게임 오버 화면 -->
+    <section id="game-over-screen" class="screen hidden">
+      <p class="panel-kicker panel-kicker--danger">MISSION TERMINATED</p>
+      <h2 class="title">GAME OVER</h2>
+      <p class="debrief-label">FINAL SCORE</p>
+      <p id="final-score">000000</p>
+      <p class="debrief-pilot">PILOT <strong id="final-player-name">-</strong></p>
+      <section class="leaderboard-panel" aria-labelledby="leaderboard-title">
+        <div class="leaderboard-heading">
+          <h3 id="leaderboard-title">LOCAL RANKING</h3>
+          <span>TOP 10</span>
+        </div>
+        <p id="current-rank" class="current-rank"></p>
+        <ol id="leaderboard-list" class="leaderboard-list"></ol>
+      </section>
+      <p class="debrief-message">함선을 재정비하고 전투 구역으로 복귀하십시오.</p>
+      <div class="pilot-entry pilot-entry--restart">
+        <label for="restart-player-name" class="pilot-entry-label">
+          NEXT PILOT NAME
+          <span>MAX 12</span>
+        </label>
+        <input
+          id="restart-player-name"
+          class="player-name-input"
+          type="text"
+          maxlength="12"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="재출격 이름을 입력하세요"
+          aria-describedby="restart-name-error"
+        >
+        <p id="restart-name-error" class="name-error" role="alert"></p>
+      </div>
+      <button id="restart-button" class="btn">재출격</button>
+    </section>
+  </div>
+
+  <script src="./script.js" defer></script>
+</body>
+</html>

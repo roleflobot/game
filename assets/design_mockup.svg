@@ -1,0 +1,62 @@
+<svg width="680" height="520" viewBox="0 0 680 520" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Ready To Destroy 플레이어/적 함선 디자인 후보</title>
+<desc>플레이어 함선 3종(인터셉터, 셔틀형, 델타윙)과 적 함선 3티어(드론, 스카웃, 크루저)의 실루엣 목업</desc>
+<rect x="0" y="0" width="680" height="520" fill="#05070f"/>
+<text x="40" y="55" font-family="Consolas, monospace" font-size="14" fill="#e6f7ff">플레이어 함선 디자인 후보</text>
+
+<g>
+<rect x="40" y="60" width="180" height="190" rx="10" fill="#0f1e2d" stroke="#2a5b73" stroke-width="1"/>
+<circle cx="130" cy="130" r="45" fill="#4ce0ff" opacity="0.12"/>
+<polygon points="130,95 100,160 160,160" fill="#4ce0ff" stroke="#0f5a70" stroke-width="1.5"/>
+<polygon points="130,162 122,178 138,178" fill="#ffe14c" opacity="0.85"/>
+<text x="130" y="210" text-anchor="middle" font-family="Consolas, monospace" font-size="14" fill="#e6f7ff">인터셉터</text>
+<text x="130" y="230" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#8fb8cc">기본형 (현재 디자인)</text>
+</g>
+
+<g>
+<rect x="250" y="60" width="180" height="190" rx="10" fill="#0f1e2d" stroke="#2a5b73" stroke-width="1"/>
+<circle cx="340" cy="130" r="45" fill="#4ce0ff" opacity="0.12"/>
+<rect x="296" y="132" width="16" height="26" rx="3" fill="#2fa9cf"/>
+<rect x="368" y="132" width="16" height="26" rx="3" fill="#2fa9cf"/>
+<polygon points="340,100 318,158 362,158" fill="#4ce0ff" stroke="#0f5a70" stroke-width="1.5"/>
+<circle cx="340" cy="120" r="5" fill="#e6f7ff"/>
+<polygon points="340,160 332,176 348,176" fill="#ffe14c" opacity="0.85"/>
+<text x="340" y="210" text-anchor="middle" font-family="Consolas, monospace" font-size="14" fill="#e6f7ff">셔틀형</text>
+<text x="340" y="230" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#8fb8cc">나셀 + 콕핏 디테일</text>
+</g>
+
+<g>
+<rect x="460" y="60" width="180" height="190" rx="10" fill="#0f1e2d" stroke="#2a5b73" stroke-width="1"/>
+<circle cx="550" cy="130" r="45" fill="#4ce0ff" opacity="0.12"/>
+<polygon points="550,98 508,156 540,140 550,148 560,140 592,156" fill="#4ce0ff" stroke="#0f5a70" stroke-width="1.5"/>
+<polygon points="550,150 542,166 558,166" fill="#ffe14c" opacity="0.85"/>
+<text x="550" y="210" text-anchor="middle" font-family="Consolas, monospace" font-size="14" fill="#e6f7ff">델타윙 (채택)</text>
+<text x="550" y="230" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#8fb8cc">스웹백 + 테일노치</text>
+</g>
+
+<text x="40" y="285" font-family="Consolas, monospace" font-size="14" fill="#e6f7ff">적 함선 티어 (채택)</text>
+
+<g>
+<rect x="40" y="290" width="180" height="190" rx="10" fill="#0f1e2d" stroke="#2a5b73" stroke-width="1"/>
+<circle cx="130" cy="360" r="45" fill="#ff3b6e" opacity="0.12"/>
+<polygon points="130,330 160,360 130,390 100,360" fill="#ff3b6e" stroke="#7a1030" stroke-width="1.5"/>
+<text x="130" y="440" text-anchor="middle" font-family="Consolas, monospace" font-size="14" fill="#e6f7ff">드론</text>
+<text x="130" y="460" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#8fb8cc">기본, 1타 처치</text>
+</g>
+
+<g>
+<rect x="250" y="290" width="180" height="190" rx="10" fill="#0f1e2d" stroke="#2a5b73" stroke-width="1"/>
+<circle cx="340" cy="360" r="45" fill="#ff9f43" opacity="0.12"/>
+<polygon points="340,392 312,334 368,334" fill="#ff9f43" stroke="#7a4a10" stroke-width="1.5"/>
+<text x="340" y="440" text-anchor="middle" font-family="Consolas, monospace" font-size="14" fill="#e6f7ff">스카웃</text>
+<text x="340" y="460" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#8fb8cc">빠름, 좌우 드리프트</text>
+</g>
+
+<g>
+<rect x="460" y="290" width="180" height="190" rx="10" fill="#0f1e2d" stroke="#2a5b73" stroke-width="1"/>
+<circle cx="550" cy="360" r="45" fill="#b76cff" opacity="0.12"/>
+<polygon points="516,360 533,330 567,330 584,360 567,390 533,390" fill="#b76cff" stroke="#4a2a70" stroke-width="1.5"/>
+<text x="550" y="440" text-anchor="middle" font-family="Consolas, monospace" font-size="14" fill="#e6f7ff">크루저</text>
+<text x="550" y="460" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#8fb8cc">크고 느림, 2타 처치</text>
+</g>
+</svg>
