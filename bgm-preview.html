@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ready To Destroy — BGM Preview</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+      background: #030714;
+      color: #eaf4ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(52, 104, 255, 0.2), transparent 34%),
+        radial-gradient(circle at 80% 75%, rgba(173, 71, 255, 0.18), transparent 36%),
+        #030714;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.45;
+      background-image:
+        radial-gradient(circle, #bfe8ff 0 1px, transparent 1.5px),
+        radial-gradient(circle, #9e8cff 0 1px, transparent 1.5px);
+      background-position: 0 0, 43px 37px;
+      background-size: 83px 83px, 127px 127px;
+    }
+
+    .player {
+      position: relative;
+      width: min(560px, calc(100vw - 32px));
+      padding: 38px;
+      border: 1px solid rgba(121, 187, 255, 0.36);
+      border-radius: 22px;
+      background: rgba(4, 12, 32, 0.84);
+      box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.55),
+        inset 0 0 42px rgba(63, 122, 255, 0.08),
+        0 0 36px rgba(61, 121, 255, 0.14);
+      backdrop-filter: blur(14px);
+    }
+
+    .kicker {
+      margin: 0 0 12px;
+      color: #75c8ff;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.22em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 7vw, 48px);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .composer {
+      margin: 16px 0 30px;
+      color: #aebed8;
+      line-height: 1.55;
+    }
+
+    .track {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(142, 183, 255, 0.14);
+    }
+
+    .track-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #4cc9ff, #8e75ff, #db65ff);
+      box-shadow: 0 0 14px #7d8dff;
+    }
+
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 9px;
+      color: #7f93b3;
+      font-family: Consolas, monospace;
+      font-size: 12px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    button {
+      min-height: 46px;
+      padding: 0 22px;
+      border: 1px solid rgba(128, 198, 255, 0.5);
+      border-radius: 10px;
+      color: #eff9ff;
+      font: inherit;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      background: linear-gradient(135deg, rgba(41, 122, 222, 0.7), rgba(111, 54, 205, 0.74));
+      box-shadow: 0 0 20px rgba(75, 132, 255, 0.16);
+    }
+
+    button:hover,
+    button:focus-visible {
+      border-color: #d7f3ff;
+      filter: brightness(1.13);
+    }
+
+    button.secondary {
+      background: rgba(18, 31, 59, 0.72);
+    }
+
+    .status {
+      min-height: 1.5em;
+      margin: 22px 0 0;
+      color: #96dfff;
+      font-size: 13px;
+    }
+
+    .note {
+      margin: 8px 0 0;
+      color: #71829e;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <main class="player">
+    <p class="kicker">READY TO DESTROY // MUSIC PLAYER</p>
+    <h1>SPACE PRÉLUDE</h1>
+    <p class="composer">
+      J. S. Bach — English Suite No. 2 in A minor, BWV 807<br>
+      I. Prélude · Space Synth Mix
+    </p>
+
+    <div class="track" aria-hidden="true">
+      <div id="track-fill" class="track-fill"></div>
+    </div>
+    <div class="time-row">
+      <span id="current-time">0:00</span>
+      <span id="duration">5:02</span>
+    </div>
+
+    <div class="controls">
+      <button id="play-toggle" type="button">PLAY</button>
+      <button id="stop-button" class="secondary" type="button">STOP</button>
+    </div>
+
+    <p id="status" class="status" role="status">PLAY를 누르면 음악만 재생됩니다.</p>
+    <p class="note">게임 효과음 없이 우주 신스 BGM만 반복 재생합니다.</p>
+  </main>
+
+  <script src="./assets/bach-english-suite-no2-prelude-bwv807-data.js"></script>
+  <script src="./bgm.js"></script>
+  <script>
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    const player = new window.MidiBgmPlayer(window.BACH_BGM_MIDI.base64, {
+      volume: 0.32448,
+    });
+    const playToggle = document.getElementById("play-toggle");
+    const stopButton = document.getElementById("stop-button");
+    const status = document.getElementById("status");
+    const trackFill = document.getElementById("track-fill");
+    const currentTimeDisplay = document.getElementById("current-time");
+    const durationDisplay = document.getElementById("duration");
+    let context = null;
+
+    function formatTime(seconds) {
+      const wholeSeconds = Math.max(0, Math.floor(seconds));
+      return (
+        Math.floor(wholeSeconds / 60) +
+        ":" +
+        String(wholeSeconds % 60).padStart(2, "0")
+      );
+    }
+
+    function getPosition() {
+      if (!player.isPlaying || context === null) {
+        return player.pausedAt;
+      }
+
+      const elapsed = context.currentTime - player.loopStartTime;
+      return elapsed > 0 ? elapsed % player.info.duration : 0;
+    }
+
+    function updateProgress() {
+      const position = getPosition();
+      currentTimeDisplay.textContent = formatTime(position);
+      durationDisplay.textContent = formatTime(player.info.duration);
+      trackFill.style.width =
+        Math.min(100, (position / player.info.duration) * 100) + "%";
+    }
+
+    playToggle.addEventListener("click", async () => {
+      if (player.isPlaying) {
+        player.pause();
+        playToggle.textContent = "PLAY";
+        status.textContent = "일시정지했습니다.";
+        updateProgress();
+        return;
+      }
+
+      if (context === null) {
+        context = new AudioContextClass();
+      }
+      if (context.state === "suspended") {
+        await context.resume();
+      }
+
+      player.start(context);
+      playToggle.textContent = "PAUSE";
+      status.textContent = "우주 신스 BGM 재생 중";
+    });
+
+    stopButton.addEventListener("click", () => {
+      player.stop();
+      playToggle.textContent = "PLAY";
+      status.textContent = "정지했습니다. 다음 재생은 처음부터 시작합니다.";
+      updateProgress();
+    });
+
+    window.setInterval(updateProgress, 200);
+    updateProgress();
+  </script>
+</body>
+</html>

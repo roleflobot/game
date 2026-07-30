@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ready To Destroy</title>
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./style.css?v=20260729-stars4">
 </head>
 <body>
   <!--
@@ -96,14 +96,6 @@
   </svg>
 
   <div id="app">
-    <button
-      id="sound-toggle"
-      class="sound-toggle"
-      type="button"
-      aria-pressed="false"
-      aria-label="효과음 끄기"
-    >SOUND: ON</button>
-
     <!-- 시작 화면 -->
     <section id="start-screen" class="screen">
       <p class="panel-kicker">DEEP SPACE DEFENSE // SECTOR 01</p>
@@ -133,6 +125,19 @@
           <span class="key-group"><kbd class="space-key">SPACE</kbd></span>
           <span>레이저건 발사</span>
         </div>
+        <div class="control-row control-row--enhance">
+          <span class="key-group enhance-keys">
+            <kbd class="space-key">SPACE</kbd>
+            <span class="key-plus">+</span>
+            <kbd class="standard-key">X</kbd>
+            <span class="key-alternative">
+              <span class="key-or">(OR</span>
+              <kbd class="standard-key">M</kbd>
+              <span class="key-or">)</span>
+            </span>
+          </span>
+          <span>공격강화 모듈 집중 발사</span>
+        </div>
         <div class="control-row">
           <span class="key-group restart-keys">
             <kbd class="enter-key">ENTER</kbd>
@@ -141,18 +146,14 @@
           </span>
           <span>시작 및 재시작</span>
         </div>
-        <div class="control-row">
-          <span class="key-group"><kbd class="standard-key">M</kbd></span>
-          <span>효과음 켜기 / 끄기</span>
-        </div>
-        <p class="control-tip">적이 떨어뜨린 아이템을 획득하면 전투강화 모듈이 장착됩니다.</p>
+        <p class="control-tip">공격강화 모듈(TRIDENT·BOLT)은 X 또는 M을 누른 상태에서 SPACE</p>
         <div class="module-guide" aria-label="전투강화 모듈 안내">
           <div class="module-guide-card">
             <span class="module-guide-icon item--spread" aria-hidden="true">
               <svg class="item-svg" viewBox="0 0 100 100"><use href="#item-icon-spread"/></svg>
             </span>
             <strong class="module-guide-name">TRIDENT</strong>
-            <span class="module-guide-desc">8초간 3방향 사격, 중첩하면 6방향</span>
+            <span class="module-guide-desc">발사 60회 충전, 중첩 시 6방향·최대 120회</span>
           </div>
           <div class="module-guide-card">
             <span class="module-guide-icon item--shield" aria-hidden="true">
@@ -166,7 +167,7 @@
               <svg class="item-svg" viewBox="0 0 100 100"><use href="#item-icon-rapid"/></svg>
             </span>
             <strong class="module-guide-name">BOLT</strong>
-            <span class="module-guide-desc">발사 간격 절반, 홀드하면 자동 연사</span>
+            <span class="module-guide-desc">속사 80회 충전, 최대 160회 자동 연사</span>
           </div>
         </div>
       </div>
@@ -198,21 +199,21 @@
           <span class="hud-label">SCORE</span>
           <span id="score-display" class="hud-value">000000</span>
         </div>
-        <div class="hud-status"><span class="status-dot"></span>COMBAT LINK</div>
+        <div class="hud-status"><span class="status-dot"></span><span id="stage-display">STAGE 1</span></div>
         <div class="hud-panel hud-panel--lives">
           <span class="hud-label">INTEGRITY</span>
           <span id="lives-display" class="life-pips" aria-label="남은 목숨 3"></span>
         </div>
       </div>
       <div id="powerup-hud" class="powerup-hud">
-        <span class="powerup-hud-label">MODULES</span>
+        <span class="powerup-hud-label">MOD</span>
         <div id="powerup-spread" class="powerup-slot hidden">
           <div class="powerup-icon item--spread">
             <svg class="item-svg" viewBox="0 0 100 100"><use href="#item-icon-spread"/></svg>
           </div>
           <span class="powerup-name">TRIDENT ×3</span>
           <div class="powerup-bar"><div class="powerup-bar-fill"></div></div>
-          <span class="powerup-time">8s</span>
+          <span class="powerup-charge">60/120</span>
         </div>
         <div id="powerup-rapid" class="powerup-slot hidden">
           <div class="powerup-icon item--rapid">
@@ -220,7 +221,7 @@
           </div>
           <span class="powerup-name">BOLT</span>
           <div class="powerup-bar"><div class="powerup-bar-fill"></div></div>
-          <span class="powerup-time">8s</span>
+          <span class="powerup-charge">80/160</span>
         </div>
         <div id="powerup-shield" class="powerup-slot hidden">
           <div class="powerup-icon item--shield">
@@ -229,8 +230,25 @@
           <span class="powerup-name">SHIELD</span>
           <span class="powerup-count"></span>
         </div>
+        <button
+          id="pause-button"
+          class="pause-toggle"
+          type="button"
+          aria-pressed="false"
+          aria-label="게임 일시정지"
+        >PAUSE</button>
       </div>
-      <div id="play-area"></div>
+      <div id="play-area">
+        <div id="boss-warning" class="boss-warning hidden">
+          <p class="boss-warning-title">WARNING</p>
+          <p class="boss-warning-subtitle">HOSTILE CRUISER INBOUND</p>
+        </div>
+        <div id="pause-overlay" class="pause-overlay hidden">
+          <p class="pause-overlay-title">PAUSED</p>
+          <p class="pause-overlay-subtitle">PAUSE 버튼을 눌러 재개하십시오</p>
+        </div>
+      </div>
+      <p class="game-control-hint">공격강화 모듈(TRIDENT·BOLT) 발사: X 또는 M을 누른 상태에서 SPACE</p>
     </section>
 
     <!-- 게임 오버 화면 -->
@@ -270,6 +288,8 @@
     </section>
   </div>
 
+  <script src="./assets/bach-english-suite-no2-prelude-bwv807-data.js" defer></script>
+  <script src="./bgm.js" defer></script>
   <script src="./script.js" defer></script>
 </body>
 </html>
